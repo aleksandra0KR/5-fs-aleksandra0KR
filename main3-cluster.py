@@ -26,78 +26,73 @@ feature_names = vector_df.columns.to_numpy()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 kmeans_before = KMeans(n_clusters=2, random_state=42)
-clusters_before = kmeans_before.fit_predict(X_train)
+kmeans_before.fit(X_train)
+clusters_before_train = kmeans_before.predict(X_train)
+clusters_before_test = kmeans_before.predict(X_test)
 
-ari_no_selection = adjusted_rand_score(y_train, clusters_before)
-silhouette_no_selection = silhouette_score(X_train, clusters_before)
-print(f"Adjusted Rand Index before feature selection: {ari_no_selection}")
-print(f"Silhouette Score before feature selection: {silhouette_no_selection}")
+external_estimation_before_selection = adjusted_rand_score(y_test, clusters_before_test)
+internal_estimation_before_selection = silhouette_score(X_train, clusters_before_train)
+print(f"Adjusted Rand Index: {external_estimation_before_selection}")
+print(f"Silhouette Score: {internal_estimation_before_selection}")
 '''
-Adjusted Rand Index before feature selection: -0.054515494142974213
-Silhouette Score before feature selection: 0.17299745225834856
+Adjusted Rand Index: -0.054515494142974213
+Silhouette Score: 0.17299745225834856
 '''
 
-
-selected_features = built_in_mine(X, y, feature_names)
-print("Selected features using filter method:", selected_features)
-
-selected_indices = [list(feature_names).index(f) for f in selected_features]
+selected_features_built = built_in_mine(X, y, feature_names)
+selected_indices = [list(feature_names).index(f) for f in selected_features_built]
 X_train_selected = X_train[:, selected_indices]
 X_test_selected = X_test[:, selected_indices]
 
 kmeans_after = KMeans(n_clusters=2, random_state=42)
-clusters_after = kmeans_after.fit_predict(X_train_selected)
+kmeans_after.fit(X_train_selected)
+clusters_after_train = kmeans_after.predict(X_train_selected)
+clusters_after_test = kmeans_after.predict(X_test_selected)
 
-
-ari_with_selection = adjusted_rand_score(y_train, clusters_after)
-silhouette_with_selection = silhouette_score(X_train_selected, clusters_after)
-print(f"Adjusted Rand Index after feature selection: {ari_with_selection}")
-print(f"Silhouette Score after feature selection: {silhouette_with_selection}")
-
+external_estimation_after_selection = adjusted_rand_score(y_test, clusters_after_test)
+internal_estimation_after_selection = silhouette_score(X_train_selected, clusters_after_train)
+print(f"Adjusted Rand Index: {external_estimation_after_selection}")
+print(f"Silhouette Score: {internal_estimation_after_selection}")
 '''
-Adjusted Rand Index after feature selection: 0.2501740036737811
-Silhouette Score after feature selection: 0.7634013246436302
+Adjusted Rand Index: 0.2501740036737811
+Silhouette Score: 0.7634013246436302
 '''
 
-
-selected_features = filter_mine(X, y, feature_names)
-print("Selected features using filter method:", selected_features)
-
-
-selected_indices = [list(feature_names).index(f) for f in selected_features]
+selected_features_filter = filter_mine(X, y, feature_names)
+selected_indices = [list(feature_names).index(f) for f in selected_features_filter]
 X_train_selected = X_train[:, selected_indices]
 X_test_selected = X_test[:, selected_indices]
 
-
 kmeans_after = KMeans(n_clusters=2, random_state=42)
-clusters_after = kmeans_after.fit_predict(X_train_selected)
+kmeans_after.fit(X_train_selected)
+clusters_after_train = kmeans_after.predict(X_train_selected)
+clusters_after_test = kmeans_after.predict(X_test_selected)
+
+external_estimation_after_selection = adjusted_rand_score(y_test, clusters_after_test)
+internal_estimation_after_selection = silhouette_score(X_train_selected, clusters_after_train)
+print(f"Adjusted Rand Index: {external_estimation_after_selection}")
+print(f"Silhouette Score: {internal_estimation_after_selection}")
+'''
+Adjusted Rand Index: 0.259674995429451
+Silhouette Score: 0.7911033743614592
+'''
 
 
-ari_with_selection = adjusted_rand_score(y_train, clusters_after)
-silhouette_with_selection = silhouette_score(X_train_selected, clusters_after)
-print(f"Adjusted Rand Index after feature selection: {ari_with_selection}")
-print(f"Silhouette Score after feature selection: {silhouette_with_selection}")
-
-
-selected_features = wrapper_mine(X, y, feature_names)
-print("Selected features using filter method:", selected_features)
-
-selected_indices = [list(feature_names).index(f) for f in selected_features]
+selected_features_wrap = wrapper_mine(X, y, feature_names)
+selected_indices = [list(feature_names).index(f) for f in selected_features_wrap]
 X_train_selected = X_train[:, selected_indices]
 X_test_selected = X_test[:, selected_indices]
 
-
 kmeans_after = KMeans(n_clusters=2, random_state=42)
-clusters_after = kmeans_after.fit_predict(X_train_selected)
+kmeans_after.fit(X_train_selected)
+clusters_after_train = kmeans_after.predict(X_train_selected)
+clusters_after_test = kmeans_after.predict(X_test_selected)
 
-
-ari_with_selection = adjusted_rand_score(y_train, clusters_after)
-silhouette_with_selection = silhouette_score(X_train_selected, clusters_after)
-print(f"Adjusted Rand Index after feature selection: {ari_with_selection}")
-print(f"Silhouette Score after feature selection: {silhouette_with_selection}")
-
-
+external_estimation_after_selection = adjusted_rand_score(y_test, clusters_after_test)
+internal_estimation_after_selection = silhouette_score(X_train_selected, clusters_after_train)
+print(f"Adjusted Rand: {external_estimation_after_selection}")
+print(f"Silhouette Score: {internal_estimation_after_selection}")
 '''
-Adjusted Rand Index after feature selection: 0.249688301230111
-Silhouette Score after feature selection: 0.7731011876543235
+Adjusted Rand: 0.249688301230111
+Silhouette Score: 0.7731011876543235
 '''

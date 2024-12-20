@@ -25,8 +25,9 @@ label_mapper = {
 }
 y = np.array([label_mapper[label] for label in labels])
 X = vector_df.to_numpy()
+feature_names = vector_df.columns.to_numpy()
 
-X_train, X_test, y_train, y_test = train_test_split(vector_df, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 models = {
     'RandomForest': RandomForestClassifier(random_state=42),
@@ -34,22 +35,25 @@ models = {
     'DecisionTree': DecisionTreeClassifier(random_state=42)
 }
 
-for name, model in models.items():
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    print(f"{name} accuracy before feature selection: {accuracy_score(y_test, y_pred)}")
+#for name, model in models.items():
+#    model.fit(X_train, y_train)
+#    y_pred = model.predict(X_test)
+#    print(f"{name} accuracy before feature selection: {accuracy_score(y_test, y_pred)}")
 
-selected_features_filter = built_in_mine(X_train, y_train, X_train.columns, k=10)
-X_train_filter = X_train[selected_features_filter]
-X_test_filter = X_test[selected_features_filter]
+selected_features_filter = built_in_mine(X_train, y_train, feature_names, k=30)
+selected_indices_filter = [list(feature_names).index(f) for f in selected_features_filter]
+X_train_filter = X_train[:, selected_indices_filter]
+X_test_filter = X_test[:, selected_indices_filter]
 
-selected_features_embedded = filter_mine(X_train, y_train, X_train.columns, k=10)
-X_train_embedded = X_train[selected_features_embedded]
-X_test_embedded = X_test[selected_features_embedded]
+selected_features_embedded = filter_mine(X_train, y_train, feature_names, k=30)
+selected_indices_embedded = [list(feature_names).index(f) for f in selected_features_embedded]
+X_train_embedded = X_train[:, selected_indices_embedded]
+X_test_embedded = X_test[:, selected_indices_embedded]
 
-selected_features_wrapper = wrapper_mine(X_train, y_train, X_train.columns, k=10)
-X_train_wrapper = X_train[selected_features_wrapper]
-X_test_wrapper = X_test[selected_features_wrapper]
+selected_features_wrapper = wrapper_mine(X_train, y_train, feature_names, k=30)
+selected_indices_wrapper = [list(feature_names).index(f) for f in selected_features_wrapper]
+X_train_wrapper = X_train[:, selected_indices_wrapper]
+X_test_wrapper = X_test[:, selected_indices_wrapper]
 
 for name, model in models.items():
     model.fit(X_train_filter, y_train)
@@ -63,15 +67,3 @@ for name, model in models.items():
     model.fit(X_train_wrapper, y_train)
     y_pred = model.predict(X_test_wrapper)
     print(f"{name} accuracy after wrapper method: {accuracy_score(y_test, y_pred)}")
-
-'''
-RandomForest accuracy before feature selection: 0.9757847533632287
-LogisticRegression accuracy before feature selection: 0.9820627802690582
-DecisionTree accuracy before feature selection: 0.9721973094170404
-RandomForest accuracy after filter method: 0.9426008968609866
-RandomForest accuracy after embedded method: 0.9434977578475336
-LogisticRegression accuracy after filter method: 0.9426008968609866
-LogisticRegression accuracy after embedded method: 0.9408071748878923
-DecisionTree accuracy after filter method: 0.9426008968609866
-DecisionTree accuracy after embedded method: 0.9434977578475336
-'''
